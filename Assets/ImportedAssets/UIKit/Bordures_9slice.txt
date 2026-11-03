@@ -1,0 +1,16 @@
+Bordures de découpe en 9 zones (9-slicing), en pixels
+
+Les images du kit arrivent dans Unity comme n'importe quelle image téléchargée : en Texture Type Default, sans bordures.
+1. Sélectionner les images, régler Texture Type = Sprite (2D and UI), Sprite Mode = Single, puis Apply.
+2. Pour une image à découper : Open Sprite Editor, panneau Sprite (en bas à droite), champs Border, puis Apply.
+   Le Sprite Editor fait partie du package 2D Sprite (Package Manager > Unity Registry).
+
+Image                  L    B    R    T
+UI/Panel_Dark.png      32   32   32   32
+UI/Button_Yellow.png   32   36   32   28    (le bas contient le relief du bouton)
+UI/Button_Blue.png     32   36   32   28
+UI/Panel_Cream.png     48   48   48   48
+
+Les autres images (fonds, bandeau du titre, icônes) ne se découpent pas :
+Image Type Simple, avec Preserve Aspect pour le bandeau et les icônes.
+L'icône du jeu (GameIcon) peut rester en Default : les Player Settings acceptent une texture ordinaire.

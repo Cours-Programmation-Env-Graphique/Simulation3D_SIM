@@ -1,13 +1,21 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     
-    private readonly List<LevelResult> _resultsList = new List<LevelResult>();
-    private int _penaltyTime;
+    private int _totalPenalty;
+    public int TotalPenalty => _totalPenalty;
+
+    private float _totalTime;
+    public float TotalTime => _totalTime;
+
+    private int _totalHits;
+    public int TotalHits => _totalHits;
+
+    public static event Action<int> PenaltyChanged;
 
     private void Awake()
     {
@@ -21,64 +29,47 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void OnEnable()
+    {
+        Obstacle.Hit += HandleObstacleHit;
+    }
+
+    private void OnDisable()
+    {
+        Obstacle.Hit -= HandleObstacleHit;
+    }
+
+    private void HandleObstacleHit(int p_penaltySeconds)
+    {
+        _totalHits++;
+        _totalPenalty += p_penaltySeconds;
+        PenaltyChanged?.Invoke(_totalPenalty);
+    }
+
     private void Start()
     {
         Debug.Log("Atteignez le burger le plus rapidement sans touché d'obstacle");
     }
     
-    /// <summary>
-    /// Méthode qui augmente le nombre de collision
-    /// </summary>
-    /// <param name="p_penaltySeconds">Pénalité en secondes de l'obstacle</param>
-    public void RegisterHit(int p_penaltySeconds)
-    {
-        _penaltyTime += p_penaltySeconds;
-        // Debug.Log($"Accrochages : {_penaltyTime}");
-    }
+
 
     /// <summary>
     /// Affiche le temps et le résultats du niveau qui vient de se terminer
     /// </summary>
     public void CompleteLevel()
     {
-        int levelIndex = SceneManager.GetActiveScene().buildIndex;
-        float duration = Time.timeSinceLevelLoad;
-        _resultsList.Add(new LevelResult(levelIndex, duration, _penaltyTime));
-        _penaltyTime = 0; // remet à 0 pour le prochain niveau
 
+        _totalTime += Time.timeSinceLevelLoad;
 
-        int nextIndex = levelIndex + 1;
+        int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
+   
         if (nextIndex < SceneManager.sceneCountInBuildSettings)
         {
             SceneManager.LoadScene(nextIndex);
         }
         else
         {
-            ShowSummary();
+            Debug.Log("Partie terminée");
         }
-    }
-
-    private void ShowSummary()
-    {
-        float total = 0;
-        
-        // Afficher tous les LevelResult de la liste
-        foreach(LevelResult levelResult in _resultsList)
-        {
-            float score = levelResult.Duration + levelResult.Penalty;
-            total += score;
-
-            Debug.Log($"Niveau {levelResult.LevelIndex + 1} : {levelResult.Duration:F2} sec.");
-            Debug.Log($"Pénalité : {levelResult.Penalty}");
-            Debug.Log($"Résultat : {score:F2} sec.");
-            Debug.Log("-------------------------------");
-        }
-
-
-        Debug.Log($"Résultat final {total:F2} sec.");
-
-
-        Player player = FindAnyObjectByType<Player>();
-        Destroy(player.gameObject);
     }
 }
