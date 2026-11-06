@@ -72,4 +72,14 @@ public class GameManager : MonoBehaviour
             Debug.Log("Partie terminée");
         }
     }
+
+    public void ReturnToMainMenu()
+    {
+        // S'assurer que le jeu est pas en pause pour la nouvelle partie;
+        Time.timeScale = 1.0f;
+        
+        // Détruit le gameManager pour en faire un neuf à la partie suivante
+        Destroy(gameObject);
+        SceneManager.LoadScene(0);
+    }
 }
