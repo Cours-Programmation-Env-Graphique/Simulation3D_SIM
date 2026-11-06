@@ -35,7 +35,7 @@ public class EndMenuUI : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            //GameManager.Instance.ReturnToMainMenu();
+            GameManager.Instance.ReturnToMainMenu();
         }
         else
         {

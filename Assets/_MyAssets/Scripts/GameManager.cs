@@ -46,13 +46,6 @@ public class GameManager : MonoBehaviour
         PenaltyChanged?.Invoke(_totalPenalty);
     }
 
-    private void Start()
-    {
-        Debug.Log("Atteignez le burger le plus rapidement sans touché d'obstacle");
-    }
-    
-
-
     /// <summary>
     /// Affiche le temps et le résultats du niveau qui vient de se terminer
     /// </summary>
@@ -66,10 +59,6 @@ public class GameManager : MonoBehaviour
         if (nextIndex < SceneManager.sceneCountInBuildSettings)
         {
             SceneManager.LoadScene(nextIndex);
-        }
-        else
-        {
-            Debug.Log("Partie terminée");
         }
     }
 
